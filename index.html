@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuditCheck — Discover what's missing</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">§</span>AuditCheck</div>
+    <nav class="nav">
+      <a href="#" class="nav-link active" data-view="upload">New Audit</a>
+      <a href="#" class="nav-link" data-view="history">History</a>
+      <a href="#" class="nav-link" data-view="templates">Templates</a>
+      <a href="#" class="nav-link" data-view="docs">Docs</a>
+    </nav>
+    <div class="avatar">M</div>
+  </header>
+
+  <!-- ============================================================= -->
+  <!-- VIEW 1: UPLOAD                                                -->
+  <!-- ============================================================= -->
+  <main id="view-upload" class="view">
+    <section class="hero">
+      <div class="eyebrow">— Checklist-driven Gap Analysis —</div>
+      <h1 class="display">Upload your <em>sources</em>.<br />Discover what's missing.</h1>
+      <p class="lede">
+        Extract key points from your reference documents, then check your target
+        document against every item &mdash; surfacing audit points it silently omits.
+      </p>
+    </section>
+
+    <section class="panels">
+      <!-- DOC A -->
+      <div class="panel" id="panelA">
+        <div class="panel-head">
+          <span class="panel-tag">· DOCUMENT A · <span id="countA">0 FILES</span> · <span id="statusA">EMPTY</span></span>
+        </div>
+        <div class="panel-body">
+          <h2 class="panel-title">Source Corpus <span class="chip">MULTI-FILE</span></h2>
+          <p class="panel-sub">Key checklist points are extracted across all files in this set</p>
+
+          <ul id="filesA" class="file-list"></ul>
+
+          <label class="dropzone" for="inputA">
+            <input type="file" id="inputA" accept=".txt,.md,.pdf" multiple hidden />
+            <span>+ Drop more files or <b>browse</b></span>
+          </label>
+
+          <details class="paste">
+            <summary>…or paste text for Document A</summary>
+            <textarea id="pasteA" rows="6" placeholder="Paste key points / policy text here. Each sentence or bullet becomes a checklist item."></textarea>
+            <button class="btn-mini" id="usePasteA">Use pasted text</button>
+          </details>
+        </div>
+        <div class="panel-foot">
+          <span id="footA">0 FILES · 0 PAGES</span>
+          <span id="footAWords">~0 WORDS</span>
+        </div>
+      </div>
+
+      <!-- DOC B -->
+      <div class="panel" id="panelB">
+        <div class="panel-head">
+          <span class="panel-tag">· DOCUMENT B · <span id="statusB">EMPTY</span></span>
+        </div>
+        <div class="panel-body">
+          <h2 class="panel-title">Audit Target <span class="chip">SINGLE</span></h2>
+          <p class="panel-sub">Checked against every extracted checklist point</p>
+
+          <ul id="filesB" class="file-list"></ul>
+
+          <label class="dropzone" for="inputB">
+            <input type="file" id="inputB" accept=".txt,.md,.pdf" hidden />
+            <span>+ Drop a file or <b>browse</b></span>
+          </label>
+
+          <details class="paste">
+            <summary>…or paste text for Document B</summary>
+            <textarea id="pasteB" rows="6" placeholder="Paste the document being audited here."></textarea>
+            <button class="btn-mini" id="usePasteB">Use pasted text</button>
+          </details>
+        </div>
+        <div class="panel-foot">
+          <span id="footB">READY FOR COMPARISON</span>
+          <span id="footBMeta">0 FILE</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-row">
+      <button id="runBtn" class="btn-primary" disabled>Run Audit &rarr;</button>
+      <span class="cta-hint">Need both Document A and Document B to proceed</span>
+    </div>
+  </main>
+
+  <!-- ============================================================= -->
+  <!-- VIEW 2: PROCESSING                                            -->
+  <!-- ============================================================= -->
+  <main id="view-processing" class="view hidden">
+    <section class="hero tight">
+      <div class="eyebrow">· PIPELINE RUNNING ·</div>
+      <h1 class="display">Finding your <em>checklist</em>…</h1>
+      <div class="progress-meta">
+        <span id="progStepLabel">0 of 6 steps complete</span>
+        <span>elapsed <span id="progElapsed" class="mono">00:00</span></span>
+      </div>
+      <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    </section>
+
+    <ol id="pipeline" class="pipeline">
+      <li data-step="1"><span class="step-num">1</span>
+        <div><div class="step-title">Text Extraction</div><div class="step-sub">Reading Document A + B</div></div>
+        <div class="step-stat" data-stat-for="1">pending</div></li>
+      <li data-step="2"><span class="step-num">2</span>
+        <div><div class="step-title">Sentence Splitting</div><div class="step-sub">Tokenize into candidate audit points</div></div>
+        <div class="step-stat" data-stat-for="2">pending</div></li>
+      <li data-step="3"><span class="step-num">3</span>
+        <div><div class="step-title">Key-point Extraction</div><div class="step-sub">Heuristic filter · modals · policy verbs</div></div>
+        <div class="step-stat" data-stat-for="3">pending</div></li>
+      <li data-step="4"><span class="step-num">4</span>
+        <div><div class="step-title">Keyword Index of Doc B</div><div class="step-sub">Stopword removal · stemming-lite</div></div>
+        <div class="step-stat" data-stat-for="4">pending</div></li>
+      <li data-step="5"><span class="step-num">5</span>
+        <div><div class="step-title">Similarity Scoring</div><div class="step-sub">Keyword overlap · best B-sentence per item</div></div>
+        <div class="step-stat" data-stat-for="5">pending</div></li>
+      <li data-step="6"><span class="step-num">6</span>
+        <div><div class="step-title">Classification &amp; Dashboard</div><div class="step-sub">thresholds: match ≥ 0.70 · partial ≥ 0.45</div></div>
+        <div class="step-stat" data-stat-for="6">pending</div></li>
+    </ol>
+  </main>
+
+  <!-- ============================================================= -->
+  <!-- VIEW 3: DASHBOARD                                             -->
+  <!-- ============================================================= -->
+  <main id="view-dashboard" class="view hidden">
+
+    <section class="dash-head">
+      <div class="eyebrow" id="auditId">AUDIT · #------ · COMPLETED --</div>
+      <h1 class="display" id="auditTitle">Document A <em>vs</em> Document B</h1>
+
+      <div class="dash-actions">
+        <button class="btn-ghost" id="btnRerun">↻ Re-run</button>
+        <button class="btn-ghost" id="btnExport">↓ Export JSON</button>
+        <button class="btn-primary" id="btnNew">+ New Audit</button>
+      </div>
+    </section>
+
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">KEY POINTS <span class="kpi-sub">in Doc A</span></div>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-foot" id="kpiTotalFoot">0 sentences scanned</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label match">MATCHED <span class="kpi-sub">≥ 0.70</span></div>
+        <div class="kpi-value" id="kpiMatched">0</div>
+        <div class="kpi-foot">fully covered in B</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label partial">PARTIAL <span class="kpi-sub">0.45 – 0.69</span></div>
+        <div class="kpi-value" id="kpiPartial">0</div>
+        <div class="kpi-foot">weakly covered</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label miss">MISSING <span class="kpi-sub">&lt; 0.45</span></div>
+        <div class="kpi-value" id="kpiMissing">0</div>
+        <div class="kpi-foot">absent from B</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">COVERAGE SCORE <span class="kpi-sub">weighted</span></div>
+        <div class="kpi-value" id="kpiCoverage">0%</div>
+        <div class="kpi-foot">matched + ½·partial</div>
+      </div>
+    </section>
+
+    <section class="dash-grid">
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Top Missing Points</h3>
+          <span class="card-sub">PRIORITIZED BY WEIGHT</span>
+        </div>
+        <ul id="missingList" class="missing-list"></ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Status Breakdown</h3>
+          <span class="card-sub">COUNTS BY CLASS</span>
+        </div>
+        <div id="statusBars" class="status-bars"></div>
+
+        <div class="legend">
+          <span class="legend-item"><span class="dot match"></span> MATCHED · similarity ≥ 0.70</span>
+          <span class="legend-item"><span class="dot partial"></span> PARTIAL · 0.45 ≤ s &lt; 0.70</span>
+          <span class="legend-item"><span class="dot miss"></span> MISSING · s &lt; 0.45</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-wide">
+      <div class="card-head">
+        <h3>Checklist Detail</h3>
+        <span class="card-sub"><span id="itemCount">0</span> items · sorted by status severity</span>
+      </div>
+
+      <div class="filter-row">
+        <label class="filter"><input type="text" id="search" placeholder="Search checklist…" /></label>
+        <div class="filter-pills">
+          <button class="pill active" data-filter="all">All</button>
+          <button class="pill" data-filter="missing">Missing</button>
+          <button class="pill" data-filter="partial">Partial</button>
+          <button class="pill" data-filter="matched">Matched</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead>
+            <tr>
+              <th style="width:56px">#</th>
+              <th>Checklist Item (from Doc A)</th>
+              <th style="width:110px">Status</th>
+              <th>Best match in Doc B</th>
+              <th style="width:80px">Score</th>
+            </tr>
+          </thead>
+          <tbody id="checkBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="mono">auditcheck.local · client-side only · your files never leave this page</span>
+  </footer>
+
+  <!-- PDF.js for PDF text extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
